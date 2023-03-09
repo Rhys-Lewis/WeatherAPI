@@ -1,0 +1,7 @@
+C:\Users\derhy\source\repos\WeatherAPI_Tabular\bin\Model.asdatabase
+C:\Users\derhy\source\repos\WeatherAPI_Tabular\bin\Model.deploymenttargets
+C:\Users\derhy\source\repos\WeatherAPI_Tabular\bin\Model.deploymentoptions
+C:\Users\derhy\source\repos\WeatherAPI_Tabular\obj\Development\WeatherAPI_Tabular.smproj.CoreCompileInputs.cache
+C:\Users\derhy\source\repos\WeatherAPI_Tabular\obj\Development\Model.asdatabase
+C:\Users\derhy\source\repos\WeatherAPI_Tabular\obj\Development\Model.deploymentoptions
+C:\Users\derhy\source\repos\WeatherAPI_Tabular\obj\Development\Model.deploymenttargets

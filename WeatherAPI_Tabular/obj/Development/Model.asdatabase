@@ -1,0 +1,543 @@
+{
+  "name": "WeatherAPI_Tabular",
+  "compatibilityLevel": 1500,
+  "model": {
+    "name": "WeatherAPI_Model",
+    "culture": "en-AU",
+    "dataSources": [
+      {
+        "type": "structured",
+        "name": "SQL/zotac;WeatherAPI_DW",
+        "connectionDetails": {
+          "protocol": "tds",
+          "address": {
+            "server": "zotac",
+            "database": "WeatherAPI_DW"
+          },
+          "authentication": null,
+          "query": null
+        },
+        "credential": {
+          "AuthenticationKind": "UsernamePassword",
+          "kind": "SQL",
+          "path": "zotac;WeatherAPI_DW",
+          "Username": "sa",
+          "EncryptConnection": false
+        }
+      }
+    ],
+    "tables": [
+      {
+        "name": "dimCondition",
+        "columns": [
+          {
+            "name": "condition_id",
+            "dataType": "int64",
+            "sourceColumn": "condition_id"
+          },
+          {
+            "name": "text",
+            "dataType": "string",
+            "sourceColumn": "text"
+          },
+          {
+            "name": "icon",
+            "dataType": "string",
+            "sourceColumn": "icon"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = #\"SQL/zotac;WeatherAPI_DW\",",
+                "    dbo_dimCondition = Source{[Schema=\"dbo\",Item=\"dimCondition\"]}[Data]",
+                "in",
+                "    dbo_dimCondition"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "dimLocation",
+        "columns": [
+          {
+            "name": "location_id",
+            "dataType": "int64",
+            "sourceColumn": "location_id"
+          },
+          {
+            "name": "name",
+            "dataType": "string",
+            "sourceColumn": "name"
+          },
+          {
+            "name": "region",
+            "dataType": "string",
+            "sourceColumn": "region"
+          },
+          {
+            "name": "country",
+            "dataType": "string",
+            "sourceColumn": "country"
+          },
+          {
+            "name": "lattitude",
+            "dataType": "double",
+            "sourceColumn": "lattitude"
+          },
+          {
+            "name": "longitude",
+            "dataType": "double",
+            "sourceColumn": "longitude"
+          },
+          {
+            "name": "location_lookup",
+            "dataType": "string",
+            "sourceColumn": "location_lookup"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = #\"SQL/zotac;WeatherAPI_DW\",",
+                "    dbo_dimLocation = Source{[Schema=\"dbo\",Item=\"dimLocation\"]}[Data]",
+                "in",
+                "    dbo_dimLocation"
+              ]
+            }
+          }
+        ],
+        "hierarchies": [
+          {
+            "name": "Location",
+            "levels": [
+              {
+                "name": "country",
+                "ordinal": 0,
+                "column": "country"
+              },
+              {
+                "name": "region",
+                "ordinal": 1,
+                "column": "region"
+              },
+              {
+                "name": "name",
+                "ordinal": 2,
+                "column": "name"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "factWeatherObservation",
+        "columns": [
+          {
+            "name": "observation_id",
+            "dataType": "int64",
+            "sourceColumn": "observation_id"
+          },
+          {
+            "name": "api_call_datetime",
+            "dataType": "dateTime",
+            "sourceColumn": "api_call_datetime"
+          },
+          {
+            "name": "observation_date",
+            "dataType": "dateTime",
+            "sourceColumn": "observation_date"
+          },
+          {
+            "name": "location_id",
+            "dataType": "int64",
+            "sourceColumn": "location_id"
+          },
+          {
+            "name": "condition_id",
+            "dataType": "int64",
+            "sourceColumn": "condition_id"
+          },
+          {
+            "name": "api_call",
+            "dataType": "string",
+            "sourceColumn": "api_call"
+          },
+          {
+            "name": "api_call_result",
+            "dataType": "string",
+            "sourceColumn": "api_call_result"
+          },
+          {
+            "name": "observation_datetime",
+            "dataType": "dateTime",
+            "sourceColumn": "observation_datetime"
+          },
+          {
+            "name": "temp_c",
+            "dataType": "double",
+            "sourceColumn": "temp_c"
+          },
+          {
+            "name": "feelslike_c",
+            "dataType": "double",
+            "sourceColumn": "feelslike_c"
+          },
+          {
+            "name": "humidty",
+            "dataType": "int64",
+            "sourceColumn": "humidty"
+          },
+          {
+            "name": "cloud",
+            "dataType": "int64",
+            "sourceColumn": "cloud"
+          },
+          {
+            "name": "uv",
+            "dataType": "double",
+            "sourceColumn": "uv"
+          },
+          {
+            "type": "calculated",
+            "name": "calculated_dew_point",
+            "dataType": "double",
+            "isDataTypeInferred": true,
+            "expression": "[temp_c] - ((100-factWeatherObservation[humidty]) /5)"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "factWeatherObservation_04March2023",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = #\"SQL/zotac;WeatherAPI_DW\",",
+                "    dbo_factWeatherObservation = Source{[Schema=\"dbo\",Item=\"factWeatherObservation\"]}[Data],",
+                "    #\"Filtered Rows\" = Table.SelectRows(dbo_factWeatherObservation, each ([observation_date] = #date(2023, 3, 4)))",
+                "in",
+                "    #\"Filtered Rows\""
+              ]
+            },
+            "annotations": [
+              {
+                "name": "QueryEditorSerialization",
+                "value": [
+                  "<?xml version=\"1.0\" encoding=\"UTF-16\"?><Gemini xmlns=\"QueryEditorSerialization\"><AnnotationContent><![CDATA[<RSQueryCommandText>let",
+                  "    Source = #\"SQL/zotac;WeatherAPI_DW\",",
+                  "    dbo_factWeatherObservation = Source{[Schema=\"dbo\",Item=\"factWeatherObservation\"]}[Data]",
+                  "in",
+                  "    dbo_factWeatherObservation</RSQueryCommandText><RSQueryCommandType>Text</RSQueryCommandType><RSQueryDesignState></RSQueryDesignState>]]></AnnotationContent></Gemini>"
+                ]
+              }
+            ]
+          }
+        ],
+        "measures": [
+          {
+            "name": "AverageTemp",
+            "expression": [
+              " ROUND(DIVIDE(SUM(factWeatherObservation[temp_c]),COUNTROWS(factWeatherObservation)),1)",
+              ""
+            ]
+          },
+          {
+            "name": "Rolling24HourAverage",
+            "expression": " ROUND(CALCULATE([AverageTemp], factWeatherObservation[observation_datetime] >= MAX(factWeatherObservation[observation_datetime]) -1),1)"
+          }
+        ]
+      },
+      {
+        "name": "dimDate",
+        "dataCategory": "Time",
+        "columns": [
+          {
+            "name": "observation_date",
+            "dataType": "dateTime",
+            "isKey": true,
+            "sourceColumn": "observation_date"
+          },
+          {
+            "name": "year",
+            "dataType": "int64",
+            "sourceColumn": "year"
+          },
+          {
+            "name": "month_number",
+            "dataType": "string",
+            "sourceColumn": "month_number"
+          },
+          {
+            "name": "year_month_number",
+            "dataType": "string",
+            "sourceColumn": "year_month_number"
+          },
+          {
+            "name": "year_month_short",
+            "dataType": "string",
+            "sourceColumn": "year_month_short"
+          },
+          {
+            "name": "month_name_short",
+            "dataType": "string",
+            "sourceColumn": "month_name_short"
+          },
+          {
+            "name": "month_name_long",
+            "dataType": "string",
+            "sourceColumn": "month_name_long"
+          },
+          {
+            "name": "day_of_week_number",
+            "dataType": "int64",
+            "sourceColumn": "day_of_week_number"
+          },
+          {
+            "name": "day_of_week",
+            "dataType": "string",
+            "sourceColumn": "day_of_week"
+          },
+          {
+            "name": "day_of_week_short",
+            "dataType": "string",
+            "sourceColumn": "day_of_week_short"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = #\"SQL/zotac;WeatherAPI_DW\",",
+                "    dbo_dimDate = Source{[Schema=\"dbo\",Item=\"dimDate\"]}[Data]",
+                "in",
+                "    dbo_dimDate"
+              ]
+            }
+          }
+        ],
+        "hierarchies": [
+          {
+            "name": "Calendar",
+            "levels": [
+              {
+                "name": "year",
+                "ordinal": 0,
+                "column": "year"
+              },
+              {
+                "name": "month_name_long",
+                "ordinal": 1,
+                "column": "month_name_long"
+              },
+              {
+                "name": "day_of_week",
+                "ordinal": 2,
+                "column": "day_of_week"
+              },
+              {
+                "name": "observation_date",
+                "ordinal": 3,
+                "column": "observation_date"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "relationships": [
+      {
+        "name": "131188c2-0d78-40f4-b84e-bff9b65a0826",
+        "fromTable": "factWeatherObservation",
+        "fromColumn": "observation_date",
+        "toTable": "dimDate",
+        "toColumn": "observation_date"
+      },
+      {
+        "name": "8c69ccba-89e9-40fd-b377-c9a7ac5181d0",
+        "fromTable": "factWeatherObservation",
+        "fromColumn": "location_id",
+        "toTable": "dimLocation",
+        "toColumn": "location_id"
+      },
+      {
+        "name": "148b30fb-4151-4663-8e44-0a8a68802265",
+        "fromTable": "factWeatherObservation",
+        "fromColumn": "condition_id",
+        "toTable": "dimCondition",
+        "toColumn": "condition_id"
+      }
+    ],
+    "perspectives": [
+      {
+        "name": "WeatherDataOnly",
+        "tables": [
+          {
+            "name": "dimCondition",
+            "columns": [
+              {
+                "name": "condition_id"
+              },
+              {
+                "name": "icon"
+              },
+              {
+                "name": "text"
+              }
+            ]
+          },
+          {
+            "name": "dimDate",
+            "columns": [
+              {
+                "name": "day_of_week"
+              },
+              {
+                "name": "day_of_week_number"
+              },
+              {
+                "name": "day_of_week_short"
+              },
+              {
+                "name": "month_name_long"
+              },
+              {
+                "name": "month_name_short"
+              },
+              {
+                "name": "month_number"
+              },
+              {
+                "name": "observation_date"
+              },
+              {
+                "name": "year"
+              },
+              {
+                "name": "year_month_number"
+              },
+              {
+                "name": "year_month_short"
+              }
+            ],
+            "hierarchies": [
+              {
+                "name": "Calendar"
+              }
+            ]
+          },
+          {
+            "name": "dimLocation",
+            "columns": [
+              {
+                "name": "country"
+              },
+              {
+                "name": "lattitude"
+              },
+              {
+                "name": "location_id"
+              },
+              {
+                "name": "location_lookup"
+              },
+              {
+                "name": "longitude"
+              },
+              {
+                "name": "name"
+              },
+              {
+                "name": "region"
+              }
+            ],
+            "hierarchies": [
+              {
+                "name": "Location"
+              }
+            ]
+          },
+          {
+            "name": "factWeatherObservation",
+            "columns": [
+              {
+                "name": "calculated_dew_point"
+              },
+              {
+                "name": "cloud"
+              },
+              {
+                "name": "condition_id"
+              },
+              {
+                "name": "feelslike_c"
+              },
+              {
+                "name": "humidty"
+              },
+              {
+                "name": "location_id"
+              },
+              {
+                "name": "observation_date"
+              },
+              {
+                "name": "observation_datetime"
+              },
+              {
+                "name": "observation_id"
+              },
+              {
+                "name": "temp_c"
+              },
+              {
+                "name": "uv"
+              }
+            ],
+            "measures": [
+              {
+                "name": "AverageTemp"
+              },
+              {
+                "name": "Rolling24HourAverage"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "roles": [
+      {
+        "name": "ReadLast24HoursOnly",
+        "modelPermission": "read",
+        "tablePermissions": [
+          {
+            "name": "factWeatherObservation",
+            "filterExpression": "factWeatherObservation[observation_datetime] >=  TODAY() - 1"
+          }
+        ]
+      }
+    ],
+    "annotations": [
+      {
+        "name": "ClientCompatibilityLevel",
+        "value": "600"
+      }
+    ]
+  }
+}

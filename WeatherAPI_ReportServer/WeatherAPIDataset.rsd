@@ -1,0 +1,172 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<SharedDataSet xmlns="http://schemas.microsoft.com/sqlserver/reporting/2010/01/shareddatasetdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner">
+  <DataSet Name="DataSet1">
+    <Query>
+      <DataSourceReference>/WeatherAPI</DataSourceReference>
+      <CommandText>SELECT
+  factWeatherObservation.observation_id
+  ,factWeatherObservation.observation_datetime
+  ,factWeatherObservation.temp_c
+  ,factWeatherObservation.feelslike_c
+  ,factWeatherObservation.humidty
+  ,factWeatherObservation.cloud
+  ,factWeatherObservation.uv
+  ,dimLocation.name
+  ,dimLocation.region
+  ,dimLocation.country
+  ,dimLocation.lattitude
+  ,dimLocation.longitude
+  ,dimDate.observation_date
+  ,dimDate.[year]
+  ,dimDate.month_number
+  ,dimDate.year_month_number
+  ,dimDate.year_month_short
+  ,dimDate.month_name_short
+  ,dimDate.month_name_long
+  ,dimDate.day_of_week_number
+  ,dimDate.day_of_week
+  ,dimDate.day_of_week_short
+FROM
+  factWeatherObservation
+  INNER JOIN dimDate
+    ON factWeatherObservation.observation_date = dimDate.observation_date
+  INNER JOIN dimLocation
+    ON factWeatherObservation.location_id = dimLocation.location_id</CommandText>
+      <rd:DesignerState>
+        <QueryDefinition xmlns="http://schemas.microsoft.com/ReportingServices/QueryDefinition/Relational">
+          <AutoJoin>False</AutoJoin>
+          <SelectedColumns>
+            <ColumnExpression ColumnOwner="factWeatherObservation" ColumnName="observation_id" />
+            <ColumnExpression ColumnOwner="factWeatherObservation" ColumnName="observation_datetime" />
+            <ColumnExpression ColumnOwner="factWeatherObservation" ColumnName="temp_c" />
+            <ColumnExpression ColumnOwner="factWeatherObservation" ColumnName="feelslike_c" />
+            <ColumnExpression ColumnOwner="factWeatherObservation" ColumnName="humidty" />
+            <ColumnExpression ColumnOwner="factWeatherObservation" ColumnName="cloud" />
+            <ColumnExpression ColumnOwner="factWeatherObservation" ColumnName="uv" />
+            <ColumnExpression ColumnOwner="dimLocation" ColumnName="name" />
+            <ColumnExpression ColumnOwner="dimLocation" ColumnName="region" />
+            <ColumnExpression ColumnOwner="dimLocation" ColumnName="country" />
+            <ColumnExpression ColumnOwner="dimLocation" ColumnName="lattitude" />
+            <ColumnExpression ColumnOwner="dimLocation" ColumnName="longitude" />
+            <ColumnExpression ColumnOwner="dimDate" ColumnName="observation_date" />
+            <ColumnExpression ColumnOwner="dimDate" ColumnName="year" />
+            <ColumnExpression ColumnOwner="dimDate" ColumnName="month_number" />
+            <ColumnExpression ColumnOwner="dimDate" ColumnName="year_month_number" />
+            <ColumnExpression ColumnOwner="dimDate" ColumnName="year_month_short" />
+            <ColumnExpression ColumnOwner="dimDate" ColumnName="month_name_short" />
+            <ColumnExpression ColumnOwner="dimDate" ColumnName="month_name_long" />
+            <ColumnExpression ColumnOwner="dimDate" ColumnName="day_of_week_number" />
+            <ColumnExpression ColumnOwner="dimDate" ColumnName="day_of_week" />
+            <ColumnExpression ColumnOwner="dimDate" ColumnName="day_of_week_short" />
+          </SelectedColumns>
+          <Joins>
+            <Join Type="CROSS JOIN" ColumnOwner="factWeatherObservation" />
+            <Join Type="INNER JOIN" ColumnOwner="dimDate">
+              <On>
+                <From ColumnOwner="factWeatherObservation" ColumnName="observation_date" />
+                <To ColumnOwner="dimDate" ColumnName="observation_date" />
+              </On>
+            </Join>
+            <Join Type="INNER JOIN" ColumnOwner="dimLocation">
+              <On>
+                <From ColumnOwner="factWeatherObservation" ColumnName="location_id" />
+                <To ColumnOwner="dimLocation" ColumnName="location_id" />
+              </On>
+            </Join>
+          </Joins>
+        </QueryDefinition>
+      </rd:DesignerState>
+    </Query>
+    <Fields>
+      <Field Name="observation_id">
+        <DataField>observation_id</DataField>
+        <rd:TypeName>System.Int32</rd:TypeName>
+      </Field>
+      <Field Name="observation_datetime">
+        <DataField>observation_datetime</DataField>
+        <rd:TypeName>System.DateTime</rd:TypeName>
+      </Field>
+      <Field Name="temp_c">
+        <DataField>temp_c</DataField>
+        <rd:TypeName>System.Decimal</rd:TypeName>
+      </Field>
+      <Field Name="feelslike_c">
+        <DataField>feelslike_c</DataField>
+        <rd:TypeName>System.Decimal</rd:TypeName>
+      </Field>
+      <Field Name="humidty">
+        <DataField>humidty</DataField>
+        <rd:TypeName>System.Int32</rd:TypeName>
+      </Field>
+      <Field Name="cloud">
+        <DataField>cloud</DataField>
+        <rd:TypeName>System.Int32</rd:TypeName>
+      </Field>
+      <Field Name="uv">
+        <DataField>uv</DataField>
+        <rd:TypeName>System.Decimal</rd:TypeName>
+      </Field>
+      <Field Name="name">
+        <DataField>name</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="region">
+        <DataField>region</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="country">
+        <DataField>country</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="lattitude">
+        <DataField>lattitude</DataField>
+        <rd:TypeName>System.Decimal</rd:TypeName>
+      </Field>
+      <Field Name="longitude">
+        <DataField>longitude</DataField>
+        <rd:TypeName>System.Decimal</rd:TypeName>
+      </Field>
+      <Field Name="observation_date">
+        <DataField>observation_date</DataField>
+        <rd:TypeName>System.DateTime</rd:TypeName>
+      </Field>
+      <Field Name="year">
+        <DataField>year</DataField>
+        <rd:TypeName>System.Int16</rd:TypeName>
+      </Field>
+      <Field Name="month_number">
+        <DataField>month_number</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="year_month_number">
+        <DataField>year_month_number</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="year_month_short">
+        <DataField>year_month_short</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="month_name_short">
+        <DataField>month_name_short</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="month_name_long">
+        <DataField>month_name_long</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="day_of_week_number">
+        <DataField>day_of_week_number</DataField>
+        <rd:TypeName>System.Byte</rd:TypeName>
+      </Field>
+      <Field Name="day_of_week">
+        <DataField>day_of_week</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="day_of_week_short">
+        <DataField>day_of_week_short</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+    </Fields>
+  </DataSet>
+  <rd:ReportServerUrl>http://zotac/reportserver</rd:ReportServerUrl>
+</SharedDataSet>
